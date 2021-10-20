@@ -112,6 +112,7 @@ class _UsersListScreenState extends State<UsersListScreen> {
           onPressed: () {
             _searchTextFormFieldController.clear();
             context.read<SearchBloc>().add(DisabledSearchEvent());
+            context.read<UsersListBloc>().add(SearchToUsersListEvent(''));
           },
         ),
         title: TextField(
