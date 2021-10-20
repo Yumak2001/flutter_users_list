@@ -51,7 +51,7 @@ class Location {
   );
 
   Location.fromJson(Map json){
-    street = json['street'].toString();
+    street = "${json['street']['number']} ${json['street']['name']}";
     city = json['city'].toString();
     state = json['state'].toString();
     postcode = json['postcode'].toString();
