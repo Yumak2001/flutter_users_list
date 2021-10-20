@@ -1,14 +1,14 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_users_list/screen/users_list/bloc/search_bloc.dart';
+import 'package:flutter_users_list/screen/users_list/bloc/users_list_bloc.dart';
+import 'package:flutter_users_list/screen/users_list/bloc/users_list_event.dart';
+import 'package:flutter_users_list/screen/users_list/users_list_screen.dart';
 
 import 'bloc/login_bloc.dart';
 import 'bloc/login_event.dart';
 import 'bloc/login_state.dart';
-
-import '../../hive_common.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -31,7 +31,17 @@ class _LoginScreenState extends State<LoginScreen> {
           if (state is InitLoginState) {
             _loginFormFieldController.clear();
           } else if (state is LoggedInLoginState) {
-            log("LoggedIn");
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MultiBlocProvider(
+              providers: [
+                BlocProvider<UsersListBloc>(
+                  create: (_) => UsersListBloc()..add(OpenScreenUsersListEvent()),
+                ),
+                BlocProvider<SearchBloc>(
+                  create: (_) => SearchBloc(),
+                ),
+              ],
+              child: const UsersListScreen(),
+            )));
           } else if (state is ValidationErrorLoginState) {
             Scaffold.of(context).showSnackBar(SnackBar(
               content: Text(
@@ -88,15 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             );
           } else {
-            return Center(
-              child: TextButton(
-                onPressed: () {
-                  deleteUsername();
-                  context.read<LoginBloc>().add(InitLoginEvent());
-                },
-                child: const Text("Выйти"),
-              ),
-            );
+            return const Center();
           }
         },
       ),
